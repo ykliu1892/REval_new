@@ -51,3 +51,4 @@ Dockerfile~
 .mypy_cache/
 
 data/
+ignore/

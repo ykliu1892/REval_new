@@ -1,3 +1,9 @@
+"""
+@date: 20.11.29
+@editor: Ke Liu kliu0@umass.edu
+Modified code to probe appositional and noun compound modifiers. 
+Part of UMass CS685 Fall 2020 project"""
+
 from __future__ import absolute_import, division, unicode_literals
 
 from senteval import utils
@@ -12,6 +18,8 @@ from reval.probing_tasks import (
     TreeDepthEval,
     SDPTreeDepthEval,
     ArgumentGrammaticalRoleEval,
+    ArgumentAddGrammarRoleEval,     # Kirk's new code
+    ArgumentAddGrammarRoleControl,
 )
 
 
@@ -42,25 +50,30 @@ class RE(object):
         self.prepare = prepare if prepare else lambda x, y: None
 
         self.list_tasks = [
-            "Length",
-            "EntityDistance",
-            "ArgumentOrder",
-            "EntityExistsBetweenHeadTail",
-            "EntityCountORGBetweenHeadTail",
-            "EntityCountPERBetweenHeadTail",
-            "EntityCountDATEBetweenHeadTail",
-            "EntityCountMISCBetweenHeadTail",
-            "EntityCountLOCBetweenHeadTail",
-            "PosTagHeadLeft",
-            "PosTagHeadRight",
-            "PosTagTailLeft",
-            "PosTagTailRight",
-            "ArgTypeHead",
-            "ArgTypeTail",
-            "TreeDepth",
-            "SDPTreeDepth",
-            "ArgumentHeadGrammaticalRole",
-            "ArgumentTailGrammaticalRole",
+            # "Length",
+            # "EntityDistance",
+            # "ArgumentOrder",
+            # "EntityExistsBetweenHeadTail",
+            # "EntityCountORGBetweenHeadTail",
+            # "EntityCountPERBetweenHeadTail",
+            # "EntityCountDATEBetweenHeadTail",
+            # "EntityCountMISCBetweenHeadTail",
+            # "EntityCountLOCBetweenHeadTail",
+            # "PosTagHeadLeft",
+            # "PosTagHeadRight",
+            # "PosTagTailLeft",
+            # "PosTagTailRight",
+            # "ArgTypeHead",
+            # "ArgTypeTail",
+            # "TreeDepth",
+            # "SDPTreeDepth",
+            # "ArgumentHeadGrammaticalRole",
+            # "ArgumentTailGrammaticalRole",
+            # Kirk's new code
+            "ArgumentAddGrammarRole_Head",
+            "ArgumentAddGrammarRole_Tail",
+            "ArgumentGrammarRole_ControlHead",
+            "ArgumentGrammarRole_ControlTail",
         ]
 
     def eval(self, name):
@@ -135,6 +148,27 @@ class RE(object):
             self.evaluation = ArgumentGrammaticalRoleEval(
                 tpath, "tail", seed=self.params.seed
             )
+        # Kirk's new code
+        elif name == "ArgumentAddGrammarRole_Head":
+            self.evaluation = ArgumentAddGrammarRoleEval(
+                tpath, "head", seed=self.params.seed
+            ) 
+
+        elif name == "ArgumentAddGrammarRole_Tail":
+            self.evaluation = ArgumentAddGrammarRoleEval(
+                tpath, "tail", seed=self.params.seed
+            ) 
+        
+        elif name == "ArgumentGrammarRole_ControlHead":
+            self.evaluation = ArgumentAddGrammarRoleControl(
+                tpath, "head", seed=self.params.seed
+            )
+
+        elif name == "ArgumentGrammarRole_ControlTail":
+            self.evaluation = ArgumentAddGrammarRoleControl(
+                tpath, "tail", seed=self.params.seed
+            )
+        
         else:
             raise ValueError(f"'{name}' is not a valid task.")
 

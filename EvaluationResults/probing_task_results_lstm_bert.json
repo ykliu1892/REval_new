@@ -1,0 +1,86 @@
+{
+    "ArgTypeHead": {
+        "acc": 82.84,
+        "devacc": 85.87,
+        "ndev": 22631,
+        "ntest": 15509
+    },
+    "ArgTypeTail": {
+        "acc": 57.94,
+        "devacc": 56.91,
+        "ndev": 22631,
+        "ntest": 15509
+    },
+    "ArgumentHeadGrammaticalRole": {
+        "acc": 63.47,
+        "devacc": 64.5,
+        "ndev": 22538,
+        "ntest": 15436
+    },
+    "ArgumentOrder": {
+        "acc": 79.83,
+        "devacc": 80.65,
+        "ndev": 22631,
+        "ntest": 15509
+    },
+    "ArgumentTailGrammaticalRole": {
+        "acc": 84.07,
+        "devacc": 85.04,
+        "ndev": 22537,
+        "ntest": 15434
+    },
+    "EntityDistance": {
+        "acc": 22.85,
+        "devacc": 24.45,
+        "ndev": 20338,
+        "ntest": 14069
+    },
+    "EntityExistsBetweenHeadTail": {
+        "acc": 67.35,
+        "devacc": 67.7,
+        "ndev": 22631,
+        "ntest": 15509
+    },
+    "Length": {
+        "acc": 41.2,
+        "devacc": 41.44,
+        "ndev": 22151,
+        "ntest": 15254
+    },
+    "PosTagHeadLeft": {
+        "acc": 34.29,
+        "devacc": 36.18,
+        "ndev": 19366,
+        "ntest": 13503
+    },
+    "PosTagHeadRight": {
+        "acc": 36.59,
+        "devacc": 40.97,
+        "ndev": 22590,
+        "ntest": 15461
+    },
+    "PosTagTailLeft": {
+        "acc": 41.47,
+        "devacc": 41.44,
+        "ndev": 21139,
+        "ntest": 14428
+    },
+    "PosTagTailRight": {
+        "acc": 66.72,
+        "devacc": 66.97,
+        "ndev": 22528,
+        "ntest": 15441
+    },
+    "SDPTreeDepth": {
+        "acc": 33.98,
+        "devacc": 33.54,
+        "ndev": 22584,
+        "ntest": 15484
+    },
+    "TreeDepth": {
+        "acc": 29.29,
+        "devacc": 29.2,
+        "ndev": 22575,
+        "ntest": 15481
+    }
+}

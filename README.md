@@ -1,82 +1,51 @@
-# REval
+# REval new - modification of REval https://github.com/DFKI-NLP/REval
 
-## Table of Contents
 
-* [Introduction](#introduction)
-* [Overview](#-overview)
-* [Requirements](#-requirements)
-* [Installation](#-installation)
-* [Probing](#-probing)
-* [Usage](#-usage)
-* [Citation](#-citation)
-* [License](#-license)
 
 
 ## 🎓&nbsp; Introduction
 
-REval is a simple framework for probing sentence-level representations of Relation Extraction models.
+REval new is a simple framework for probing sentence-level representations of Relation Extraction models.
+
+Modified code to probe appositional and noun compound modifiers. Designed to study RE models trained on TACRED.
+
+Part of UMass CS685 Fall 2020 project.
+
+Annotated data is saved ./AddGR_data
+Evaluation results are saved ./EvaluationResults
 
 ## ✅&nbsp; Requirements
 
-REval is tested with:
+REval new is tested with:
 
 - Python 3.7
 
 
 ## 🚀&nbsp; Installation
 
-### With pip
-
-```bash
-<TBD>
-```
-
 ### From source
 ```bash
-git clone https://github.com/DFKI-NLP/REval
-cd REval
+git clone ____
+cd REval_new
 pip install -r requirements.txt
 ```
 
 ## 🔬&nbsp; Probing
 
 ### Supported Datasets
-- SemEval 2010 Task 8 (CoreNLP annotated version) [[LINK](https://cloud.dfki.de/owncloud/index.php/s/LFDHFmRcrPyf6nL/download)]
-- TACRED (obtained via LDC) [[LINK](https://catalog.ldc.upenn.edu/LDC2018T24)]
+/AddGR_data
 
 ### Probing Tasks
 
-| Task     	| SemEval 2010        | TACRED             |
-|----------	| :-----------------: | :----------------: |
-|ArgTypeHead| :heavy_check_mark:  | :heavy_check_mark: |
-|ArgTypeTail| :heavy_check_mark:  | :heavy_check_mark: |
-|Length| :heavy_check_mark:  | :heavy_check_mark: |
-|EntityDistance| :heavy_check_mark: | :heavy_check_mark: |
-|ArgumentOrder|  | :heavy_check_mark: |
-|EntityExistsBetweenHeadTail| :heavy_check_mark:  | :heavy_check_mark: |
-|PosTagHeadLeft| :heavy_check_mark:  | :heavy_check_mark: |
-|PosTagHeadRight| :heavy_check_mark:  | :heavy_check_mark: |
-|PosTagTailLeft| :heavy_check_mark:  | :heavy_check_mark: |
-|PosTagTailRight| :heavy_check_mark:  | :heavy_check_mark: |
-|TreeDepth| :heavy_check_mark:  | :heavy_check_mark: |
-|SDPTreeDepth| :heavy_check_mark:  | :heavy_check_mark: |
-|ArgumentHeadGrammaticalRole| :heavy_check_mark:  | :heavy_check_mark: |
-|ArgumentTailGrammaticalRole| :heavy_check_mark:  | :heavy_check_mark: |
+"ArgumentAddGrammarRole_Head"
+"ArgumentAddGrammarRole_Tail"
+"ArgumentGrammarRole_ControlHead"
+"ArgumentGrammarRole_ControlTail"
 
 
 ## 🔧&nbsp; Usage
 
 ### **Step 1**: create the probing task datasets from the original [datasets](#supported-datasets).
-
-#### SemEval 2010 Task 8
-
-```bash
-python reval.py generate-all-from-semeval \
-    --train-file <SEMEVAL DIR>/train.json \
-    --validation-file <SEMEVAL DIR>/dev.json \
-    --test-file <SEMEVAL DIR>/test.json \
-    --output-dir ./data/semeval/
-```
 
 #### TACRED
 
@@ -88,57 +57,80 @@ python reval.py generate-all-from-tacred \
     --output-dir ./data/tacred/
 ```
 
-### **Step 2**: Run the probing tasks on a model.
-
-For example, download a Relation Extraction model trained with [RelEx](https://github.com/DFKI-NLP/RelEx), e.g., the [CNN](https://cloud.dfki.de/owncloud/index.php/s/F3gf9xkeb2foTFe/download) trained on SemEval.
+### **Step 2**: Train RE models using repo: https://github.com/DFKI-NLP/RelEx. (recommend to do with GPU)
 
 ```bash
-mkdir -p models/cnn_semeval
-wget --content-disposition https://cloud.dfki.de/owncloud/index.php/s/F3gf9xkeb2foTFe/download -P models/cnn_semeval
+git clone https://github.com/DFKI-NLP/RelEx
+cd RelEx
+!pip install -r requirements.txt
 ```
 
-```bash
-python probing_task_evaluation.py \
-    --model-dir ./models/cnn_semeval/ \
-    --data-dir ./data/semeval/ \
-    --dataset semeval2010 \
-    --cuda-device 0 \
-    --batch-size 64 \
-    --cache-representations
-```
+save TACRED data under ../relex-data/tacred/
 
-After the run is completed, the results are stored to `probing_task_results.json` in the `model-dir`.
+'''
+!allennlp train \
+  ./configs/relation_classification/tacred/baseline_cnn_tacred_bert.jsonnet \
+  -s <MODEL DIR> \
+  --include-package relex
+'''
+
+### **Step 3**: Run the probing tasks on a model.
+
+Original probing tasks
+
+    git clone https://github.com/DFKI-NLP/REval
+
+    !python 'REval/probing_task_evaluation.py' \
+      --model-dir <MODEL DIR> \
+      --data-dir 'REval_new/data/tacred/' \
+      --dataset tacred --cuda-device 0 --batch-size 64 --cache-representations
+
+New probing tasks
+
+Move "appos_nn_head.txt", "appos_nn_tail.txt", "control_head.txt", and "control_tail.txt" to REval_new/data/tacred/
+
+Then run:
+    !python 'REval_new/new_probing_task_evaluation.py' \
+        --model-dir <MODEL DIR> \
+        --data-dir 'REval_new/data/tacred/' \
+        --dataset tacred --cuda-device 0 --batch-size 64 --cache-representations
+
+
+After the run is completed, the results are stored to `new_probing_task_results.json` in the `model-dir`.
 
 ```json
-{
-    "ArgTypeHead": {
-        "acc": 75.82,
-        "devacc": 78.96,
-        "ndev": 670,
-        "ntest": 2283
-    },
-    "ArgTypeTail": {
-        "acc": 75.4,
-        "devacc": 78.79,
-        "ndev": 627,
-        "ntest": 2130
-    },
+{   
     [...]
+    "ArgumentAddGrammarRole_Tail": {
+    [...]
+        "99": {
+            "1) id": "61b3a179d3a9265c91e3",
+            "2) sentence": "Japanese office equipment maker Konica Minolta said Tuesday it was tying up with Dutch rival Oce in a bid to focus energies on profitable business areas .",
+            "3) head": "Konica Minolta at (4, 5)",
+            "4) tail": "Japanese at (0, 0)",
+            "5) NER": "MISC O O O ORGANIZATION ORGANIZATION O DATE O O O O O MISC O ORGANIZATION O O O O O O O O O O O",
+            "6) actual label": "2: noun compound modifier",
+            "7) predicted": "2: noun compound modifier"
+        },
+        "devacc": 86.19,
+        "ndev": 449,
+        "ntest": 390,
+        "testF1": 72.16,
+        "testacc": 82.56
+    },
+    "ArgumentGrammarRole_ControlHead": {
+        "devacc": 37.56,
+        "ndev": 450,
+        "ntest": 398,
+        "testF1": 29.93,
+        "testacc": 30.4
+    },
+    "ArgumentGrammarRole_ControlTail": {
+        "devacc": 36.53,
+        "ndev": 449,
+        "ntest": 390,
+        "testF1": 29.2,
+        "testacc": 33.85
+    }
 }
 ```
-
-## 📚&nbsp; Citation
-
-If you use REval, please consider citing the following paper:
-```
-@inproceedings{alt-etal-2020-probing,
-    title={Probing Linguistic Features of Sentence-level Representations in Neural Relation Extraction},
-    author={Christoph Alt and Aleksandra Gabryszak and Leonhard Hennig},
-    year={2020},
-    booktitle={Proceedings of ACL},
-    url={https://arxiv.org/abs/2004.08134}
-}
-```
-
-## 📘&nbsp; License
-REval is released under the terms of the [MIT License](LICENSE).
