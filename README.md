@@ -1,4 +1,4 @@
-# REval new - modification of REval https://github.com/DFKI-NLP/REval
+# REval new - modification of REval 
 
 
 
@@ -25,7 +25,7 @@ REval new is tested with:
 
 ### From source
 ```bash
-git clone ____
+git clone https://github.com/ykliu1892/REval_new
 cd REval_new
 pip install -r requirements.txt
 ```
@@ -57,7 +57,7 @@ python reval.py generate-all-from-tacred \
     --output-dir ./data/tacred/
 ```
 
-### **Step 2**: Train RE models using repo: https://github.com/DFKI-NLP/RelEx. (recommend to do with GPU)
+### **Step 2**: Train RE models using RelEx repository (recommend to do with GPU).
 
 ```bash
 git clone https://github.com/DFKI-NLP/RelEx
@@ -67,33 +67,37 @@ cd RelEx
 
 save TACRED data under ../relex-data/tacred/
 
-'''
+```
 !allennlp train \
   ./configs/relation_classification/tacred/baseline_cnn_tacred_bert.jsonnet \
   -s <MODEL DIR> \
   --include-package relex
-'''
+```
 
 ### **Step 3**: Run the probing tasks on a model.
 
 Original probing tasks
-
+    ```
     git clone https://github.com/DFKI-NLP/REval
-
+    ```
+    ```
     !python 'REval/probing_task_evaluation.py' \
       --model-dir <MODEL DIR> \
       --data-dir 'REval_new/data/tacred/' \
       --dataset tacred --cuda-device 0 --batch-size 64 --cache-representations
+    ```
 
 New probing tasks
 
 Move "appos_nn_head.txt", "appos_nn_tail.txt", "control_head.txt", and "control_tail.txt" to REval_new/data/tacred/
 
 Then run:
+    ```
     !python 'REval_new/new_probing_task_evaluation.py' \
         --model-dir <MODEL DIR> \
         --data-dir 'REval_new/data/tacred/' \
         --dataset tacred --cuda-device 0 --batch-size 64 --cache-representations
+    ```
 
 
 After the run is completed, the results are stored to `new_probing_task_results.json` in the `model-dir`.
